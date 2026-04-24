@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Presença / Programação — SGO1</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0d1117;color:#c9d1d9;min-height:100vh}
+
+ 
+.hero{background:linear-gradient(135deg,#0d1117,#161b27);padding:18px 24px;border-bottom:2px solid #58a6ff;text-align:center}
+.hero h1{font-size:1.3rem;font-weight:800;color:#e6edf3;margin-bottom:3px}
+.hero .sub{color:#8b949e;font-size:.8rem}
+#ts-linha{color:#6c9bcf;font-size:.76rem;margin-top:4px}
+.btn-row{margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.btn-action{border-radius:7px;padding:6px 16px;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid #30363d;text-decoration:none;display:inline-block}
+.btn-reload{background:#1c2333;color:#c9d1d9}
+.btn-reload:hover{background:#21262d}
+
+ 
+.kpis{display:flex;gap:6px;flex-wrap:wrap;margin:14px 14px 10px}
+.kpi{flex:1;min-width:100px;border-radius:8px;background:#161b27;border:1px solid #21262d;overflow:hidden;transition:transform .15s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi-accent{height:3px}
+.kpi-body{padding:8px 10px 10px}
+.kpi .lbl{font-size:.58rem;font-weight:700;opacity:.9;letter-spacing:.03em;margin-bottom:2px}
+.kpi .val{font-size:1.4rem;font-weight:800;line-height:1.1}
+.kpi .sub{font-size:.57rem;color:#8b949e;margin-top:2px}
+
+ 
+.tabs{display:flex;gap:0;margin:0 14px;border-bottom:2px solid #21262d}
+.tab{padding:9px 20px;font-size:.84rem;font-weight:600;cursor:pointer;color:#8b949e;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tab.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab:hover:not(.active){color:#c9d1d9}
+.tab-badge{display:inline-block;background:#21262d;color:#8b949e;border-radius:10px;padding:1px 7px;font-size:.68rem;margin-left:5px}
+.tab.active .tab-badge{background:#1c2e4a;color:#58a6ff}
+
+ 
+.filters{margin:12px 14px;background:#161b27;border:1px solid #21262d;border-radius:10px;padding:12px 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.flt-grp{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.flt-grp label{font-size:.68rem;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.03em}
+.flt-grp input,.flt-grp select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;padding:7px 10px;font-size:.82rem;outline:none;width:100%}
+.flt-grp input:focus,.flt-grp select:focus{border-color:#58a6ff}
+.flt-grp select option{background:#161b27}
+.btn-clear{background:#21262d;border:1px solid #30363d;border-radius:6px;color:#8b949e;padding:7px 14px;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;align-self:flex-end}
+.btn-clear:hover{background:#30363d;color:#c9d1d9}
+
+ 
+.legend{margin:0 14px 8px;display:flex;gap:12px;font-size:.74rem;color:#8b949e;align-items:center;flex-wrap:wrap}
+.leg-item{display:flex;align-items:center;gap:5px}
+.leg-dot{width:10px;height:10px;border-radius:50%}
+
+ 
+.container{padding:0 14px 48px}
+.card{background:#161b27;border:1px solid #21262d;border-radius:10px;overflow:hidden}
+.card-hdr{padding:10px 16px;font-weight:700;font-size:.84rem;color:#e6edf3;background:#1a2235;border-bottom:1px solid #21262d;display:flex;justify-content:space-between;align-items:center}
+.card-hdr .hint{font-size:.72rem;font-weight:400;color:#8b949e}
+.tbl-wrap{overflow-x:auto;max-height:65vh;overflow-y:auto}
+table{width:100%;min-width:750px;border-collapse:collapse;font-size:.82rem}
+thead th{background:#1c2333;color:#8b949e;padding:8px 11px;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:10;font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #30363d}
+tbody tr{border-bottom:1px solid #161b27;transition:background .1s}
+tbody tr:hover{background:#1a2235}
+tbody td{padding:8px 11px;vertical-align:middle}
+.no-data{text-align:center;padding:40px;color:#8b949e;font-size:.9rem}
+
+ 
+.pres-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;border:1.5px solid;cursor:pointer;font-size:.78rem;font-weight:700;transition:all .15s;white-space:nowrap;user-select:none;min-width:110px;justify-content:center}
+.pres-btn.pendente{background:#21262d;border-color:#444;color:#8b949e}
+.pres-btn.pendente:hover{border-color:#58a6ff;color:#58a6ff}
+.pres-btn.compareceu{background:#0d2818;border-color:#3fb950;color:#3fb950}
+.pres-btn.nao-compareceu{background:#2d0f0f;border-color:#f47067;color:#f47067}
+
+ 
+.badge-ciclo{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700}
+.badge-am{background:#2d1f00;color:#e3b341}
+.badge-pm{background:#0d1f2d;color:#58a6ff}
+.badge-sd{background:#1f0d2d;color:#bc8cff}
+.badge-xpt{background:#0d2318;color:#3fb950}
+.badge-outro{background:#21262d;color:#8b949e}
+
+ 
+.sem-rota-aviso{background:#2d1600;border:1px solid #e3b341;border-radius:8px;padding:10px 14px;margin:10px 14px;font-size:.82rem;color:#e3b341}
+
+ 
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>📋 Presença / Programação — SGO1</h1>
+  <div class="sub">Controle de comparecimento por rota e ciclo</div>
+  <div id="ts-linha">Gerado em: &lt;?= geradoEm ?></div>
+  <div class="btn-row">
+    <button class="btn-action btn-reload" onclick="location.reload()">🔄 Recarregar Dados</button>
+    <button class="btn-action btn-reload" onclick="limparPresenca()" style="border-color:#f47067;color:#f47067">🗑️ Limpar Presenças</button>
+  </div>
+</div>
+
+
+<div class="kpis" id="kpis-bar"></div>
+
+
+<div class="tabs">
+  <div class="tab active" onclick="trocarTab('com-rota')" id="tab-com">
+    Com Rota <span class="tab-badge" id="badge-com">0</span>
+  </div>
+  <div class="tab" onclick="trocarTab('sem-rota')" id="tab-sem">
+    Sem Rota / Sem Programação <span class="tab-badge" id="badge-sem">0</span>
+  </div>
+</div>
+
+
+<div class="filters" id="filtros-wrap">
+  <div class="flt-grp">
+    <label>Ciclo</label>
+    <select id="flt-ciclo" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+  <div class="flt-grp">
+    <label>ETA</label>
+    <select id="flt-eta" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+  <div class="flt-grp" style="min-width:200px">
+    <label>Buscar motorista / rota</label>
+    <input id="flt-busca" type="text" placeholder="Digite para filtrar..." oninput="aplicarFiltros()">
+  </div>
+  <div class="flt-grp" style="min-width:130px">
+    <label>Presença</label>
+    <select id="flt-pres" onchange="aplicarFiltros()">
+      <option value="">Todos</option>
+      <option value="compareceu">✅ Compareceu</option>
+      <option value="nao-compareceu">❌ Não compareceu</option>
+      <option value="pendente">⏳ Pendente</option>
+    </select>
+  </div>
+  <button class="btn-clear" onclick="limparFiltros()">✕ Limpar filtros</button>
+</div>
+
+<div class="legend">
+  <div class="leg-item"><div class="leg-dot" style="background:#3fb950"></div> Compareceu</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#f47067"></div> Não compareceu</div>
+  <div class="leg-item"><div class="leg-dot" style="background:#8b949e"></div> Pendente</div>
+  <div style="margin-left:auto;font-size:.7rem">💡 O status de presença persiste mesmo após atualizar o dashboard</div>
+</div>
+
+
+<div id="panel-com-rota" class="tab-panel active">
+  <div class="container">
+    <div class="card">
+      <div class="card-hdr">
+        <span>Motoristas com Rota</span>
+        <span class="hint" id="contagem-com">0 registros</span>
+      </div>
+      <div class="tbl-wrap">
+        <table id="tabela-com-rota">
+          <thead>
+            <tr>
+              <th style="min-width:120px">Presença</th>
+              <th>Rota Original</th>
+              <th>Motorista</th>
+              <th>Veículo</th>
+              <th>Ciclo</th>
+              <th>ETA</th>
+              <th>Nº Onda</th>
+              <th>Nº Doca</th>
+              <th>Região</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-com-rota"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="panel-sem-rota" class="tab-panel">
+  <div class="sem-rota-aviso">
+    ⚠️ Os motoristas abaixo estão na operação mas <strong>não possuem rota associada</strong> no sistema.
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-hdr">
+        <span>Motoristas sem Rota / Sem Programação</span>
+        <span class="hint" id="contagem-sem">0 registros</span>
+      </div>
+      <div class="tbl-wrap">
+        <table id="tabela-sem-rota">
+          <thead>
+            <tr>
+              <th style="min-width:120px">Presença</th>
+              <th>Motorista</th>
+              <th>Veículo</th>
+              <th>ETA</th>
+              <th>Serviço</th>
+              <th>Tipo Veículo</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-sem-rota"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var D = {"comRota":[{"id":"91335343","nome_motorista":"Andresa Rodrigues Dos Santos","veiculo":"OGW4C33","eta":"07:00","nome_ciclo":"AM99","nome_rota":"H6_AM99","codigo_rota":"AM99_16","numero_onda":"1","numero_doca":"24","regiao":"Jardim Mariliza","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"96"},{"id":"91335341","nome_motorista":"Arthur Martins de Andrade Ribeiro","veiculo":"NSN5B44","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J10_AM99","codigo_rota":"AM99_47","numero_onda":"2","numero_doca":"18","regiao":"Água Branca","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"107"},{"id":"91335335","nome_motorista":"Brenno da Silva Carvalho","veiculo":"TFA6E36","eta":"07:00","nome_ciclo":"AM99","nome_rota":"L6_AM99","codigo_rota":"AM99_38","numero_onda":"3","numero_doca":"21","regiao":"Residencial Celina Park","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"115"},{"id":"91335337","nome_motorista":"Nathan Gomes Rocha","veiculo":"PRR1G23","eta":"07:00","nome_ciclo":"AM99","nome_rota":"L4_AM99","codigo_rota":"AM99_49","numero_onda":"1","numero_doca":"22","regiao":"Granja Santos Dumont","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"137"},{"id":"91335322","nome_motorista":"Anna Paula Mendonca Rodarte","veiculo":"JIR3I58","eta":"07:00","nome_ciclo":"AM99","nome_rota":"L8_AM99","codigo_rota":"AM99_50","numero_onda":"2","numero_doca":"23","regiao":"Setor Oeste","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"105"},{"id":"91335327","nome_motorista":"Guilherme Henrique Pereira Holanda","veiculo":"RBV4E04","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J11_AM99","codigo_rota":"AM99_28","numero_onda":"2","numero_doca":"19","regiao":"Goiânia","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"106"},{"id":"90726073","nome_motorista":"Gabriel Antonio Sousa Freitas","veiculo":"QTS0J51","eta":"07:00","nome_ciclo":"AM99","nome_rota":"H8_AM99","codigo_rota":"AM99_42","numero_onda":"1","numero_doca":"23","regiao":"Cidade Jardim","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"90"},{"id":"90726331","nome_motorista":"Anderson Carlos Martins Nazario","veiculo":"JIP8460","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J13_AM99","codigo_rota":"AM99_17","numero_onda":"2","numero_doca":"21","regiao":"Alphaville Araguaia","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"68"},{"id":"91335323","nome_motorista":"Amanda Cristina Santos de Oliveira","veiculo":"NKH4J75","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J4_AM99","codigo_rota":"AM99_33","numero_onda":"3","numero_doca":"22","regiao":"Vila Resende","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"127"},{"id":"90724690","nome_motorista":"Fabio Ferreira de Oliveira","veiculo":"PQL4J61","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J9_AM99","codigo_rota":"AM99_26","numero_onda":"1","numero_doca":"21","regiao":"Da Vitoria","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"109"},{"id":"90725186","nome_motorista":"Matheus Garcia Mendes","veiculo":"SDR2G85","eta":"07:00","nome_ciclo":"AM99","nome_rota":"L13_AM99","codigo_rota":"AM99_12","numero_onda":"3","numero_doca":"26","regiao":"Residencial London Park","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"71"},{"id":"91335320","nome_motorista":"Marcos Cezar Rosa de Aquino","veiculo":"PRF9I78","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J2_AM99","codigo_rota":"AM99_43","numero_onda":"1","numero_doca":"25","regiao":"Setor Marista","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"137"},{"id":"91335339","nome_motorista":"Fernando Peres Macedo","veiculo":"OGP4G80","eta":"07:00","nome_ciclo":"AM99","nome_rota":"H5_AM99","codigo_rota":"AM99_4","numero_onda":"3","numero_doca":"20","regiao":"Goiânia","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"134"},{"id":"91335321","nome_motorista":"Alex Araujo de Freitas","veiculo":"PQF0G36","eta":"07:00","nome_ciclo":"AM99","nome_rota":"N5_AM99","codigo_rota":"AM99_29","numero_onda":"2","numero_doca":"25","regiao":"Setor Morada do Sol","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"146"},{"id":"90570118","nome_motorista":"Gabryel Wegleyshon de Aquino Silva","veiculo":"EFO4B17","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J12_AM99","codigo_rota":"AM99_13","numero_onda":"2","numero_doca":"20","regiao":"Sitios Santa Luzia","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"97"},{"id":"91335324","nome_motorista":"Pedro Henrique da Costa","veiculo":"ONJ6J50","eta":"07:00","nome_ciclo":"AM99","nome_rota":"L7_AM99","codigo_rota":"AM99_27","numero_onda":"2","numero_doca":"22","regiao":"Jardim Balneario Meia Ponte","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"112"},{"id":"90726302","nome_motorista":"Ueberson Lima da Silva","veiculo":"OWD5F89","eta":"07:00","nome_ciclo":"AM99","nome_rota":"N6_AM99","codigo_rota":"AM99_46","numero_onda":"2","numero_doca":"26","regiao":"Jardim América","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"140"},{"id":"91335333","nome_motorista":"Juscelio Pereira Lima de Oliveira","veiculo":"PQT7235","eta":"07:00","nome_ciclo":"AM99","nome_rota":"N9_AM99","codigo_rota":"AM99_40","numero_onda":"3","numero_doca":"23","regiao":"Setor Pedro Ludovico","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"90"},{"id":"90724735","nome_motorista":"Priscila Cardoso Alcantara","veiculo":"OMS6883","eta":"07:00","nome_ciclo":"AM99","nome_rota":"J7_AM99","codigo_rota":"AM99_31","numero_onda":"1","numero_doca":"26","regiao":"Jardim Abaporu","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"123"},{"id":"90569936","nome_motorista":"Djalma Jose Alves","veiculo":"FAE4J74","eta":"08:00","nome_ciclo":"AM99","nome_rota":"N7_AM99","codigo_rota":"AM99_21","numero_onda":"3","numero_doca":"25","regiao":"Loteamento Alphaville Residencial","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"105"},{"id":"90726069","nome_motorista":"Celeste Marques Pinheiro","veiculo":"JFM2G69","eta":"08:00","nome_ciclo":"AM99","nome_rota":"N4_AM99","codigo_rota":"AM99_51","numero_onda":"2","numero_doca":"24","regiao":"Vila Maria Jose","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"148"},{"id":"90725190","nome_motorista":"Heberth Santos Costa","veiculo":"TGE6D52","eta":"08:00","nome_ciclo":"AM99","nome_rota":"H3_AM99","codigo_rota":"AM99_22","numero_onda":"3","numero_doca":"24","regiao":"Bairro Independência","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"150"},{"id":"90570325","nome_motorista":"Eliezer Alves Pires Lima","veiculo":"FFZ2G67","eta":"14:00","nome_ciclo":"PM","nome_rota":"D11_PM","codigo_rota":"PM_57","numero_onda":"1","numero_doca":"68","regiao":"Colina Azul","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"61"},{"id":"90569647","nome_motorista":"Saulo Dias Freitas","veiculo":"RTG9I23","eta":"14:00","nome_ciclo":"PM","nome_rota":"R12_PM","codigo_rota":"PM_74","numero_onda":"2","numero_doca":"63","regiao":"Vila Brasilia","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"68"},{"id":"90566179","nome_motorista":"Leandro Ramos Silva","veiculo":"RMV9I44","eta":"14:00","nome_ciclo":"PM","nome_rota":"R16_PM","codigo_rota":"PM_53","numero_onda":"1","numero_doca":"60","regiao":"Polo Empresarial de Goiás","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"63"},{"id":"90573183","nome_motorista":"Igor Felipe Silva Fagundes","veiculo":"JAQ1C52","eta":"14:00","nome_ciclo":"PM","nome_rota":"K15_PM","codigo_rota":"PM_35","numero_onda":"2","numero_doca":"62","regiao":"Senador Canedo","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"45"},{"id":"90725215","nome_motorista":"Vicente Vieira de Moraes Filho","veiculo":"ONZ2F34","eta":"14:00","nome_ciclo":"PM","nome_rota":"K10_PM","codigo_rota":"PM_67","numero_onda":"1","numero_doca":"66","regiao":"Setor Aeroporto Sul","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"65"},{"id":"90569340","nome_motorista":"Elzilei da Cunha Araujo Ribeiro","veiculo":"QZI4G44","eta":"14:00","nome_ciclo":"PM","nome_rota":"K4_PM","codigo_rota":"PM_140","numero_onda":"4","numero_doca":"21","regiao":"Setor Goiânia 2","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"85"},{"id":"90569434","nome_motorista":"Maycon Rodrigues Dos Santos","veiculo":"ONY9279","eta":"14:00","nome_ciclo":"PM","nome_rota":"V13_PM","codigo_rota":"PM_141","numero_onda":"4","numero_doca":"23","regiao":"Setor Recanto das Minas Gerais","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"72"},{"id":"90570361","nome_motorista":"Gabriel Mendes Mota","veiculo":"RFG3J64","eta":"14:00","nome_ciclo":"PM","nome_rota":"D18_PM","codigo_rota":"PM_166","numero_onda":"3","numero_doca":"61","regiao":"Nossa Senhora de Fatima","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"25"},{"id":"90725342","nome_motorista":"Dione Pereira Dos Santos","veiculo":"SCK0A24","eta":"14:00","nome_ciclo":"PM","nome_rota":"I17_PM","codigo_rota":"PM_70","numero_onda":"2","numero_doca":"70","regiao":"Mansões Paraíso","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"41"},{"id":"90724713","nome_motorista":"Keila de Sousa Faria Cruz","veiculo":"RME6H22","eta":"14:00","nome_ciclo":"PM","nome_rota":"K13_PM","codigo_rota":"PM_158","numero_onda":"2","numero_doca":"68","regiao":"Jardim América","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"48"},{"id":"90725603","nome_motorista":"Alexandre Lindolfo Mendes","veiculo":"KWU9F48","eta":"14:00","nome_ciclo":"PM","nome_rota":"B6_PM","codigo_rota":"PM_87","numero_onda":"1","numero_doca":"65","regiao":"Jardim Santa Cecilia","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"67"},{"id":"90725523","nome_motorista":"Abimael Rufino de Oliveira","veiculo":"HNU6H01","eta":"14:00","nome_ciclo":"PM","nome_rota":"M14_PM","codigo_rota":"PM_161","numero_onda":"2","numero_doca":"72","regiao":"Setor Bueno","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"61"},{"id":"90725422","nome_motorista":"Marcos de Almeida Santos","veiculo":"NLP7282","eta":"14:00","nome_ciclo":"PM","nome_rota":"K14_PM","codigo_rota":"PM_154","numero_onda":"2","numero_doca":"67","regiao":"Setor Aeroporto","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"46"},{"id":"90725112","nome_motorista":"Eliezer Paulo Martins de Almeida","veiculo":"EQI8C32","eta":"14:00","nome_ciclo":"PM","nome_rota":"M12_PM","codigo_rota":"PM_58","numero_onda":"1","numero_doca":"67","regiao":"Jardim Tiradentes","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"66"},{"id":"90725315","nome_motorista":"Ozilo Mota Junior","veiculo":"PAN5D17","eta":"14:00","nome_ciclo":"PM","nome_rota":"D10_PM","codigo_rota":"PM_75","numero_onda":"1","numero_doca":"63","regiao":"Setor Rio Formoso","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"61"},{"id":"90725472","nome_motorista":"Renato Gomes Pinheiro","veiculo":"PRP5B40","eta":"14:00","nome_ciclo":"PM","nome_rota":"P15_PM","codigo_rota":"PM_163","numero_onda":"2","numero_doca":"56","regiao":"Jardim América","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"62"},{"id":"90725572","nome_motorista":"Plinio Roberto Naves da Cruz","veiculo":"OOB1215","eta":"14:00","nome_ciclo":"PM","nome_rota":"B15_PM","codigo_rota":"PM_145","numero_onda":"2","numero_doca":"66","regiao":"Setor Aeroporto","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"30"},{"id":"90725548","nome_motorista":"Cloves Abel de Faria","veiculo":"OMP8A16","eta":"14:00","nome_ciclo":"PM","nome_rota":"P12_PM","codigo_rota":"PM_9","numero_onda":"2","numero_doca":"61","regiao":"Internacional Park","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"71"},{"id":"90725521","nome_motorista":"Ivanise Lima Silva","veiculo":"OZZ6I19","eta":"14:00","nome_ciclo":"PM","nome_rota":"G8_PM","codigo_rota":"PM_31","numero_onda":"2","numero_doca":"57","regiao":"Setor Dona Iris","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"74"},{"id":"90725694","nome_motorista":"Clesio Alves de Oliveira","veiculo":"HOE5C08","eta":"14:00","nome_ciclo":"PM","nome_rota":"V14_PM","codigo_rota":"PM_88","numero_onda":"2","numero_doca":"64","regiao":"Cidade Vera Cruz","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"67"},{"id":"90725111","nome_motorista":"Edson Sousa de Alencar","veiculo":"FUO3D46","eta":"14:00","nome_ciclo":"PM","nome_rota":"K17_PM","codigo_rota":"PM_8","numero_onda":"1","numero_doca":"62","regiao":"Jardim Eldorado","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"39"},{"id":"90725616","nome_motorista":"Natanael Goncalves de Oliveira Junior","veiculo":"QOQ7A91","eta":"14:00","nome_ciclo":"PM","nome_rota":"V18_PM","codigo_rota":"PM_71","numero_onda":"1","numero_doca":"61","regiao":"Setor Garavelo Residencial Park","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"41"},{"id":"90725132","nome_motorista":"Henrique Teles Santos Peixoto","veiculo":"PQY3E13","eta":"14:00","nome_ciclo":"PM","nome_rota":"I14_PM","codigo_rota":"PM_155","numero_onda":"2","numero_doca":"69","regiao":"Setor Sudoeste","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"52"},{"id":"90725316","nome_motorista":"Paulo Cesar de Oliveira","veiculo":"RFH0C62","eta":"14:00","nome_ciclo":"PM","nome_rota":"T13_PM","codigo_rota":"PM_65","numero_onda":"1","numero_doca":"69","regiao":"Jardim Buriti Sereno","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"69"},{"id":"90725595","nome_motorista":"Leticia Goncalves de Oliveira","veiculo":"FKW4H55","eta":"14:00","nome_ciclo":"PM","nome_rota":"G7_PM","codigo_rota":"PM_72","numero_onda":"2","numero_doca":"59","regiao":"Jardim Vila Boa","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"75"},{"id":"90724712","nome_motorista":"Guilherme Santos de Jesus","veiculo":"TGN5J48","eta":"14:00","nome_ciclo":"PM","nome_rota":"B10_PM","codigo_rota":"PM_97","numero_onda":"2","numero_doca":"58","regiao":"Jardim Novo Mundo","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"59"},{"id":"90725303","nome_motorista":"Murilo Cesar Morais Roque","veiculo":"RFZ7A56","eta":"14:00","nome_ciclo":"PM","nome_rota":"T4_PM","codigo_rota":"PM_55","numero_onda":"1","numero_doca":"72","regiao":"Parque Veiga Jardim","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"107"},{"id":"90725309","nome_motorista":"Francisco Marcio Uchoa","veiculo":"MNW5813","eta":"14:00","nome_ciclo":"PM","nome_rota":"I11_PM","codigo_rota":"PM_20","numero_onda":"2","numero_doca":"60","regiao":"Conjunto Vera Cruz","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"58"},{"id":"90726024","nome_motorista":"Iago Bispo Santos","veiculo":"FEY4E24","eta":"14:00","nome_ciclo":"PM","nome_rota":"B3_PM","codigo_rota":"PM_174","numero_onda":"4","numero_doca":"18","regiao":"Setor Oeste","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":"71"},{"id":"90725267","nome_motorista":"Pollyana Goncalves Souza","veiculo":"RFA9I49","eta":"14:00","nome_ciclo":"PM","nome_rota":"D15_PM","codigo_rota":"PM_146","numero_onda":"2","numero_doca":"65","regiao":"Setor dos Funcionários","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"33"},{"id":"90726037","nome_motorista":"Jose Antunes de Sousa Neto","veiculo":"PQT7H53","eta":"14:00","nome_ciclo":"PM","nome_rota":"B17_PM","codigo_rota":"PM_14","numero_onda":"1","numero_doca":"64","regiao":"Jardim Petropolis","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"21"},{"id":"90725371","nome_motorista":"Tania Jesus de Oliveira Martins","veiculo":"PYH5F79","eta":"14:00","nome_ciclo":"PM","nome_rota":"I7_PM","codigo_rota":"PM_64","numero_onda":"1","numero_doca":"70","regiao":"Residencial Forteville","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"70"},{"id":"90725090","nome_motorista":"Raphael Siqueira Rosa","veiculo":"QQX8I81","eta":"14:00","nome_ciclo":"PM","nome_rota":"P6_PM","codigo_rota":"PM_61","numero_onda":"2","numero_doca":"71","regiao":"Setor Santo Andre","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"74"},{"id":"90725717","nome_motorista":"Alexandre Polastri Vieira","veiculo":"ONJ3I04","eta":"14:00","nome_ciclo":"PM","nome_rota":"P14_PM","codigo_rota":"PM_56","numero_onda":"1","numero_doca":"71","regiao":"Residencial Forteville","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"67"},{"id":"90568745","nome_motorista":"Helio de Oliveira Silva","veiculo":"NWE8280","eta":"14:30","nome_ciclo":"PM","nome_rota":"G3_PM","codigo_rota":"PM_105","numero_onda":"3","numero_doca":"67","regiao":"Conjunto Riviera","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"77"},{"id":"90570006","nome_motorista":"Jakson Vinicius Alves","veiculo":"PXF1D74","eta":"14:30","nome_ciclo":"PM","nome_rota":"V15_PM","codigo_rota":"PM_137","numero_onda":"3","numero_doca":"64","regiao":"Santa Genoveva","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"67"},{"id":"90569904","nome_motorista":"Overton Ribeiro da Silva","veiculo":"TGN5G37","eta":"14:30","nome_ciclo":"PM","nome_rota":"G12_PM","codigo_rota":"PM_48","numero_onda":"3","numero_doca":"69","regiao":"Jardim Olimpico","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"53"},{"id":"90725272","nome_motorista":"Gleysson Gomes da Silva","veiculo":"OHR6H22","eta":"14:30","nome_ciclo":"PM","nome_rota":"G5_PM","codigo_rota":"PM_129","numero_onda":"3","numero_doca":"72","regiao":"Setor Grande Retiro","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"76"},{"id":"90569934","nome_motorista":"Renato Ferreira Lacerda","veiculo":"EVL7J94","eta":"14:30","nome_ciclo":"PM","nome_rota":"M13_PM","codigo_rota":"PM_122","numero_onda":"3","numero_doca":"65","regiao":"Vila Jardim Pompéia","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"66"},{"id":"90569892","nome_motorista":"Gideval de Oliveira Costa","veiculo":"OND1C15","eta":"14:30","nome_ciclo":"PM","nome_rota":"K3_PM","codigo_rota":"PM_128","numero_onda":"3","numero_doca":"63","regiao":"Parque Tremendao","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"88"},{"id":"90725327","nome_motorista":"Ricardo Sousa Bras","veiculo":"OMS5H52","eta":"14:30","nome_ciclo":"PM","nome_rota":"B2_PM","codigo_rota":"PM_102","numero_onda":"3","numero_doca":"60","regiao":"Setor Sul","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":"77"}],"semRota":[{"id":"91403543","nome_motorista":"Alan Cardek da Silva Pereira","veiculo":"TFP8E91","eta":"14:00","nome_ciclo":"","nome_rota":"","codigo_rota":"","numero_onda":"","numero_doca":"","regiao":"","servico":"VUC Meli Extra","tipo_veiculo":"Vuc","num_pacotes":""},{"id":"90725506","nome_motorista":"Lorranna Wanessa Rodrigues Dos Santos","veiculo":"QCO8C85","eta":"14:30","nome_ciclo":"","nome_rota":"","codigo_rota":"","numero_onda":"","numero_doca":"","regiao":"","servico":"Utilitário Extra","tipo_veiculo":"Utilitários","num_pacotes":""}],"ts":"24/04/2026 20:23:57","erro":null};
+
+
+var LS_PREFIX = 'pres_sgo1_';
+
+function getStatus(id) {
+  return localStorage.getItem(LS_PREFIX + id) || 'pendente';
+}
+function setStatus(id, status) {
+  localStorage.setItem(LS_PREFIX + id, status);
+}
+
+
+function ciclarPresenca(id) {
+  var atual = getStatus(id);
+  var novo;
+  if (atual === 'pendente')       novo = 'compareceu';
+  else if (atual === 'compareceu') novo = 'nao-compareceu';
+  else                             novo = 'pendente';
+  setStatus(id, novo);
+  atualizarBotao(id);
+  atualizarKPIs();
+}
+
+function atualizarBotao(id) {
+  var btn = document.getElementById('btn-' + id);
+  if (!btn) return;
+  var status = getStatus(id);
+  btn.className = 'pres-btn ' + status;
+  if (status === 'compareceu')      btn.innerHTML = '✅ Compareceu';
+  else if (status === 'nao-compareceu') btn.innerHTML = '❌ Não compareceu';
+  else                               btn.innerHTML = '⬜ Pendente';
+}
+
+
+function badgeCiclo(ciclo) {
+  var c = (ciclo || '').toUpperCase();
+  var cls = c.startsWith('AM') ? 'badge-am'
+          : c.startsWith('PM') ? 'badge-pm'
+          : c.startsWith('SD') ? 'badge-sd'
+          : c === 'XPT'        ? 'badge-xpt'
+          : 'badge-outro';
+  return ciclo ? '<span class="badge-ciclo ' + cls + '">' + ciclo + '</span>' : '-';
+}
+
+
+var dadosFiltradosCom  = [];
+var dadosFiltradosSem  = [];
+
+function renderComRota(rows) {
+  dadosFiltradosCom = rows;
+  var tb = document.getElementById('tbody-com-rota');
+  document.getElementById('contagem-com').textContent = rows.length + ' registro' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) {
+    tb.innerHTML = '<tr><td colspan="9" class="no-data">Nenhum registro encontrado</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(function(r) {
+    return '<tr>' +
+      '<td><button class="pres-btn pendente" id="btn-' + r.id + '" onclick="ciclarPresenca(\'' + r.id + '\')">⬜ Pendente</button></td>' +
+      '<td><strong>' + (r.nome_rota || '-') + '</strong></td>' +
+      '<td>' + (r.nome_motorista || '-') + '</td>' +
+      '<td><code style="background:#21262d;padding:2px 6px;border-radius:4px;font-size:.79rem">' + (r.veiculo || '-') + '</code></td>' +
+      '<td>' + badgeCiclo(r.nome_ciclo) + '</td>' +
+      '<td><strong>' + (r.eta || '-') + '</strong></td>' +
+      '<td>' + (r.numero_onda || '-') + '</td>' +
+      '<td>' + (r.numero_doca || '-') + '</td>' +
+      '<td style="font-size:.76rem;color:#8b949e">' + (r.regiao || '-') + '</td>' +
+    '</tr>';
+  }).join('');
+  
+  rows.forEach(function(r) { atualizarBotao(r.id); });
+}
+
+function renderSemRota(rows) {
+  dadosFiltradosSem = rows;
+  var tb = document.getElementById('tbody-sem-rota');
+  document.getElementById('contagem-sem').textContent = rows.length + ' registro' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) {
+    tb.innerHTML = '<tr><td colspan="6" class="no-data">Nenhum motorista sem rota</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(function(r) {
+    return '<tr>' +
+      '<td><button class="pres-btn pendente" id="btn-' + r.id + '" onclick="ciclarPresenca(\'' + r.id + '\')">⬜ Pendente</button></td>' +
+      '<td>' + (r.nome_motorista || '-') + '</td>' +
+      '<td><code style="background:#21262d;padding:2px 6px;border-radius:4px;font-size:.79rem">' + (r.veiculo || '-') + '</code></td>' +
+      '<td><strong>' + (r.eta || '-') + '</strong></td>' +
+      '<td style="font-size:.76rem">' + (r.servico || '-') + '</td>' +
+      '<td style="font-size:.76rem">' + (r.tipo_veiculo || '-') + '</td>' +
+    '</tr>';
+  }).join('');
+  rows.forEach(function(r) { atualizarBotao(r.id); });
+}
+
+
+function atualizarKPIs() {
+  var todos = (D.comRota || []).concat(D.semRota || []);
+  var comp  = todos.filter(function(r){ return getStatus(r.id) === 'compareceu'; }).length;
+  var naoc  = todos.filter(function(r){ return getStatus(r.id) === 'nao-compareceu'; }).length;
+  var pend  = todos.length - comp - naoc;
+  var kpis = [
+    { lbl:'Total',          val: todos.length,            cor:'#58a6ff',   sub:'motoristas' },
+    { lbl:'✅ Compareceram', val: comp,                    cor:'#3fb950',   sub:'confirmados' },
+    { lbl:'❌ Ausentes',     val: naoc,                    cor:'#f47067',   sub:'não compareceram' },
+    { lbl:'⏳ Pendentes',    val: pend,                    cor:'#e3b341',   sub:'aguardando marcação' },
+    { lbl:'Com Rota',        val:(D.comRota||[]).length,   cor:'#bc8cff',   sub:'rotas programadas' },
+    { lbl:'Sem Rota',        val:(D.semRota||[]).length,   cor:'#e3b341',   sub:'sem programação' }
+  ];
+  document.getElementById('kpis-bar').innerHTML = kpis.map(function(k) {
+    return '<div class="kpi">' +
+      '<div class="kpi-accent" style="background:' + k.cor + '"></div>' +
+      '<div class="kpi-body">' +
+        '<div class="lbl" style="color:' + k.cor + '">' + k.lbl + '</div>' +
+        '<div class="val" style="color:' + k.cor + '">' + k.val + '</div>' +
+        '<div class="sub">' + k.sub + '</div>' +
+      '</div></div>';
+  }).join('');
+}
+
+
+function popularFiltros() {
+  var ciclos = {}, etas = {};
+  (D.comRota || []).concat(D.semRota || []).forEach(function(r) {
+    if (r.nome_ciclo) ciclos[r.nome_ciclo] = 1;
+    if (r.eta)        etas[r.eta] = 1;
+  });
+  var selC = document.getElementById('flt-ciclo');
+  Object.keys(ciclos).sort().forEach(function(c) {
+    var o = document.createElement('option'); o.value = c; o.text = c; selC.appendChild(o);
+  });
+  var selE = document.getElementById('flt-eta');
+  Object.keys(etas).sort().forEach(function(e) {
+    var o = document.createElement('option'); o.value = e; o.text = e; selE.appendChild(o);
+  });
+}
+
+function aplicarFiltros() {
+  var ciclo = document.getElementById('flt-ciclo').value;
+  var eta   = document.getElementById('flt-eta').value;
+  var busca = document.getElementById('flt-busca').value.toLowerCase();
+  var fpres = document.getElementById('flt-pres').value;
+
+  function match(r) {
+    if (ciclo && r.nome_ciclo !== ciclo) return false;
+    if (eta   && r.eta   !== eta)        return false;
+    if (fpres && getStatus(r.id) !== fpres) return false;
+    if (busca) {
+      var txt = (r.nome_motorista + r.nome_rota + r.codigo_rota + r.veiculo).toLowerCase();
+      if (txt.indexOf(busca) === -1) return false;
+    }
+    return true;
+  }
+
+  var tabAtiva = document.querySelector('.tab.active').id;
+  if (tabAtiva === 'tab-com') {
+    renderComRota((D.comRota || []).filter(match));
+  } else {
+    renderSemRota((D.semRota || []).filter(match));
+  }
+  atualizarKPIs();
+}
+
+function limparFiltros() {
+  document.getElementById('flt-ciclo').value = '';
+  document.getElementById('flt-eta').value = '';
+  document.getElementById('flt-busca').value = '';
+  document.getElementById('flt-pres').value = '';
+  aplicarFiltros();
+}
+
+
+function trocarTab(tab) {
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  if (tab === 'com-rota') {
+    document.getElementById('tab-com').classList.add('active');
+    document.getElementById('panel-com-rota').classList.add('active');
+    renderComRota(D.comRota || []);
+  } else {
+    document.getElementById('tab-sem').classList.add('active');
+    document.getElementById('panel-sem-rota').classList.add('active');
+    renderSemRota(D.semRota || []);
+  }
+  limparFiltros();
+}
+
+
+function limparPresenca() {
+  if (!confirm('Tem certeza? Isso apagará todos os registros de presença do localStorage deste navegador.')) return;
+  var keys = Object.keys(localStorage).filter(function(k){ return k.startsWith(LS_PREFIX); });
+  keys.forEach(function(k){ localStorage.removeItem(k); });
+  trocarTab('com-rota');
+  atualizarKPIs();
+}
+
+
+window.addEventListener('load', function() {
+  document.getElementById('badge-com').textContent = (D.comRota || []).length;
+  document.getElementById('badge-sem').textContent = (D.semRota || []).length;
+  popularFiltros();
+  renderComRota(D.comRota || []);
+  atualizarKPIs();
+  if (D.erro) {
+    document.getElementById('ts-linha').innerHTML +=
+      ' &nbsp;|&nbsp; <span style="color:#f47067">⚠️ ' + D.erro + '</span>';
+  }
+});
+</script>
+</body>
+</html>
